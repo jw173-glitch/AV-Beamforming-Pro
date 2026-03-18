@@ -1,0 +1,8 @@
+﻿torch
+torchaudio
+mediapipe
+pyroomacoustics
+speechbrain
+opencv-python
+numpy
+scipy
