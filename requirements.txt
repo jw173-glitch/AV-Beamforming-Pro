@@ -6,3 +6,6 @@ speechbrain
 opencv-python
 numpy
 scipy
+soundfile
+sounddevice
+streamlit
