@@ -1,29 +1,22 @@
-# AV Beamforming Prototype
+# 🎧 AV Beamforming for Target Speaker Enhancement
 
-A simple audio-visual speech enhancement system that combines:
-- Vision-based direction estimation (MediaPipe FaceMesh)
-- Active speaker detection (lip motion analysis)
-- Beamforming (delay-and-sum)
+This project implements a **multimodal audio-visual system** that enhances a target speaker's voice by combining:
 
-## Pipeline
+- 🎥 Vision-based direction estimation  
+- 🔊 Audio-based speech segmentation  
+- 🎚 Classical beamforming (DAS + MVDR)  
 
-Camera → Face Detection → Angle Estimation  
-+ Active Speaker Detection  
-→ Beamforming → Enhanced Audio Output
+👉 The key idea is:
 
-## Features
+> Use vision to determine *where to listen*,  
+> and audio to determine *when someone is speaking*.
 
-- 🎯 Track target speaker based on where user is looking
-- 🗣 Detect whether the target is speaking
-- 🔊 Enhance target speech using beamforming
+---
 
-## Demo Idea
+## 🚀 Demo Highlights
 
-- Look at a person → system enhances their voice
-- Ignore non-speaking faces
-
-## Setup
-
-```bash
-pip install -r requirements.txt
-python main.py
+- Automatically detects if someone is speaking  
+- Estimates speaker direction from video  
+- Extracts speaking segments  
+- Enhances audio using beamforming  
+- Provides an interactive Streamlit interface  
