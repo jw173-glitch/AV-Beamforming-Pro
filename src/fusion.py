@@ -14,6 +14,14 @@ def process(audio, sr, angle, frontal_conf=1.0):  # 新增 frontal_conf 参数
 
     # 新增：侧面时用 MVDR，软融合
     out_mvdr = mvdr_beamform(audio, sr, angle)
+    #output = frontal_conf * out_das + (1.0 - frontal_conf) * out_mvdr
+    # ===== 对齐长度（关键修复🔥）=====
+    min_len = min(len(out_das), len(out_mvdr))
+
+    out_das = out_das[:min_len]
+    out_mvdr = out_mvdr[:min_len]
+
     output = frontal_conf * out_das + (1.0 - frontal_conf) * out_mvdr
+    
 
     return output
