@@ -30,17 +30,22 @@ def get_face_angle(frame, fov=90):
         return None
 
     boxes = results[0].boxes.xyxy.cpu().numpy()
+    classes = results[0].boxes.cls.cpu().numpy()
 
-    # 选最大目标
-    areas = [(b[2]-b[0])*(b[3]-b[1]) for b in boxes]
+    # 只取 person 类（class 0），选面积最大的
+    person_boxes = boxes[classes == 0]
+    if len(person_boxes) == 0:
+        return None
+
+    areas = [(b[2]-b[0])*(b[3]-b[1]) for b in person_boxes]
     idx = np.argmax(areas)
 
-    x1, y1, x2, y2 = boxes[idx]
+    x1, y1, x2, y2 = person_boxes[idx]
 
-    # 用上1/4作为头部近似
-    cx = ((x1 + x2) / 2) / w
+    # 用 bounding box 顶部 20% 区域的水平中心估计头部位置
+    head_cx = ((x1 + x2) / 2) / w
 
-    angle = (cx - 0.5) * fov
+    angle = (head_cx - 0.5) * fov
 
     return angle
 

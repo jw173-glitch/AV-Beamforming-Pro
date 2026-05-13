@@ -1,4 +1,4 @@
-from src.vision import get_face_angle, get_frontal_confidence, get_lip_roi
+from src.vision import get_face_angle, get_frontal_confidence
 from src.active_speaker import ActiveSpeakerDetector
 from src.audio import load_audio, extract_audio_from_video, compute_delay, delay_and_sum, mvdr_beamform
 from src.fusion import process

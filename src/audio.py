@@ -103,11 +103,15 @@ def compute_delay(mic_pos, angle):
 
 
 def delay_and_sum(signals, delays, sr):
+    n_samples = signals.shape[0]
     aligned = []
     for i in range(signals.shape[1]):
         shift = int(delays[i] * sr)
-        aligned.append(np.roll(signals[:, i], -shift))
-
+        sig = signals[:, i]
+        if shift >= 0:
+            aligned.append(np.concatenate([sig[shift:], np.zeros(shift)]))
+        else:
+            aligned.append(np.concatenate([np.zeros(-shift), sig[:n_samples + shift]]))
     return np.mean(aligned, axis=0)
 
 
@@ -160,46 +164,3 @@ def mvdr_beamform(signals, sr, angle):
     _, enhanced = istft(out, fs=sr, nperseg=512)
 
     return enhanced.real
-# ===============================
-# 🔥 语音检测（新增）
-# ===============================
-def detect_speech_segments(audio, sr, frame_ms=100, threshold_ratio=1.5):
-
-    frame_size = int(sr * frame_ms / 1000)
-
-    energies = []
-    times = []
-
-    for i in range(0, len(audio), frame_size):
-        segment = audio[i:i+frame_size]
-
-        if len(segment) == 0:
-            continue
-
-        energy = np.mean(segment**2)
-        energies.append(energy)
-        times.append(i / sr)
-
-    energies = np.array(energies)
-
-    # 自动阈值
-    noise_floor = np.percentile(energies, 20)
-    threshold = noise_floor * threshold_ratio
-
-    speaking_flags = energies > threshold
-
-    # 合并时间段
-    segments = []
-    start = None
-
-    for t, flag in zip(times, speaking_flags):
-        if flag and start is None:
-            start = t
-        elif not flag and start is not None:
-            segments.append((start, t))
-            start = None
-
-    if start is not None:
-        segments.append((start, times[-1]))
-
-    return speaking_flags, times, segments
